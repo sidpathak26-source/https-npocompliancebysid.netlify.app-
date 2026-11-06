@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NPO Compliance &amp; Audit OS</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+            display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.7); }
+    
+    .nav-scrollbar::-webkit-scrollbar { height: 4px; }
+    
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .print-page { padding: 0 !important; max-width: 100% !important; border: none !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- TOP NAVIGATION HEADER -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 transition-colors no-print">
+    <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-3 flex-wrap">
+      
+      <!-- Brand & Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <button id="sidebar-toggle-btn" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
+            <i class="fa-solid fa-scale-balanced text-sm"></i>
+          </div>
+          <div>
+            <h1 class="font-display font-extrabold text-base tracking-tight text-slate-900 dark:text-white leading-none">
+              NPO Compliance Desk
+            </h1>
+            <span class="text-[10px] font-mono font-medium text-teal-600 dark:text-teal-400">
+              Audit OS &bull; 1961 vs. 2025 RNPO
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Year & Regime Switcher -->
+      <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700/60">
+        <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 pl-2">FY</span>
+        <select id="fy-select" class="text-xs font-mono font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-2.5 py-1 rounded-lg border-0 shadow-xs focus:ring-2 focus:ring-teal-500 cursor-pointer">
+          <option value="2024-25">2024-25</option>
+          <option value="2025-26">2025-26</option>
+          <option value="2026-27" selected>2026-27</option>
+          <option value="2027-28">2027-28</option>
+        </select>
+        <span id="regime-badge" class="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300">
+          Act 2025 RNPO
+        </span>
+      </div>
+
+      <!-- Action Utilities -->
+      <div class="flex items-center gap-2">
+        <!-- 1-Click Interactive Test & Demo Suite -->
+        <button id="run-auto-test-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-sm" title="Populate Comprehensive Test Data & Run Self-Test">
+          <i class="fa-solid fa-vial-circle-check text-xs"></i>
+          <span class="hidden sm:inline">1-Click Test Data</span>
+        </button>
+
+        <!-- Auditor Sign-Off Switch -->
+        <button id="auditor-toggle-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
+          <i class="fa-solid fa-stamp text-xs text-amber-500"></i>
+          <span id="auditor-status-text">Auditor Mode: Off</span>
+        </button>
+
+        <!-- WhatsApp Dispatch Launcher -->
+        <button id="launch-whatsapp-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-sm" title="WhatsApp Compliance Digest">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span class="hidden sm:inline">WhatsApp Dispatch</span>
+        </button>
+
+        <!-- Compliance Certificate Modal Launcher -->
+        <button id="launch-cert-modal-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white transition-all shadow-sm">
+          <i class="fa-solid fa-award"></i>
+          <span class="hidden sm:inline">Compliance Cert</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition" title="Toggle Theme">
+          <i class="fa-solid fa-moon dark:hidden text-sm"></i>
+          <i class="fa-solid fa-sun hidden dark:inline text-sm"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+    <!-- LEFT SIDEBAR: CLIENT ENTITIES & KEY DATES -->
+    <aside id="sidebar-drawer" class="lg:col-span-3 space-y-4 hidden lg:block no-print">
+      
+      <!-- NGO Client Selector Card -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-display font-bold text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            Managed Organizations
+          </h2>
+          <span id="client-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            0
+          </span>
+        </div>
+
+        <div id="clients-list-container" class="space-y-1.5 max-h-[300px] overflow-y-auto pr-1">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Add New NGO Toggle -->
+        <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button id="toggle-add-ngo-btn" class="w-full py-2 px-3 text-xs font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 hover:bg-teal-100 rounded-xl flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-plus text-[10px]"></i>
+            <span>Register New NGO</span>
+          </button>
+
+          <!-- Add NGO Form -->
+          <form id="add-ngo-form" class="mt-3 space-y-2.5 hidden">
+            <input type="text" id="ngo-name-input" placeholder="Organization Legal Name" required class="w-full text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none">
+            <div class="grid grid-cols-2 gap-2">
+              <select id="ngo-type-select" class="text-xs px-2.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                <option value="Trust">Public Trust</option>
+                <option value="Society">Society</option>
+                <option value="Section 8">Section 8 Co.</option>
+              </select>
+              <label class="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 px-2 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer">
+                <input type="checkbox" id="ngo-fcra-input" checked class="rounded text-teal-600 focus:ring-teal-500">
+                <span class="text-[11px] font-medium">Holds FCRA</span>
+              </label>
+            </div>
+            <button type="submit" class="w-full py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+              Save Organization
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Entity Expiry Countdown Card -->
+      <div id="sidebar-dates-card" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Backup / Reset Utility Card -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3.5 shadow-sm text-xs">
+        <details class="cursor-pointer group">
+          <summary class="font-bold text-slate-500 dark:text-slate-400 group-hover:text-teal-600 flex items-center justify-between">
+            <span><i class="fa-solid fa-database mr-1.5"></i> Backup &amp; Restore</span>
+            <i class="fa-solid fa-chevron-down text-[10px] transition group-open:rotate-180"></i>
+          </summary>
+          <div class="mt-3 space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <button id="export-backup-btn" class="w-full py-1.5 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-medium">
+              Export JSON Backup
+            </button>
+            <textarea id="backup-json-textarea" placeholder="Paste backup JSON here to restore..." class="w-full h-16 p-2 text-[10px] font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg"></textarea>
+            <button id="import-backup-btn" class="w-full py-1.5 px-3 bg-teal-600 text-white hover:bg-teal-700 rounded-lg text-xs font-bold">
+              Import &amp; Overwrite
+            </button>
+          </div>
+        </details>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT WORKSPACE: TABS & CONTENT PANELS -->
+    <main class="lg:col-span-9 flex flex-col space-y-4">
+      
+      <!-- HORIZONTAL NAVIGATION TABS -->
+      <nav id="module-tabs-nav" class="flex items-center gap-1 overflow-x-auto pb-1 nav-scrollbar bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm no-print">
+        <!-- Generated Dynamically -->
+      </nav>
+
+      <!-- ACTIVE TAB CONTENT MOUNT -->
+      <div id="main-content-mount" class="flex-1">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: STATUTORY COMPLIANCE & AUDIT CERTIFICATE -->
+  <!-- ========================================================================= -->
+  <div id="cert-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 md:p-8 space-y-6 relative print-page">
+      
+      <div class="flex items-center justify-between no-print border-b pb-4 dark:border-slate-800">
+        <h3 class="font-display font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-award text-teal-600"></i>
+          <span>Official Statutory Compliance Certificate</span>
+        </h3>
+        <div class="flex items-center gap-2">
+          <button id="print-cert-btn" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5">
+            <i class="fa-solid fa-print"></i> Print / Save PDF
+          </button>
+          <button id="close-cert-modal-btn" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl">
+            <i class="fa-solid fa-xmark text-base"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Certificate Body -->
+      <div id="cert-printable-body" class="p-6 md:p-8 rounded-2xl border-4 border-double border-teal-800/40 bg-radial from-slate-50 via-white to-teal-50/20 dark:from-slate-900 dark:to-slate-950 space-y-6 text-center">
+        <!-- Certificate contents generated dynamically -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: FORM 10BE OFFICIAL CERTIFICATE OF DONATION -->
+  <!-- ========================================================================= -->
+  <div id="form10be-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto" style="display: none; align-items: center; justify-content: center;">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 md:p-8 space-y-6 relative print-page my-auto">
+      
+      <div class="flex items-center justify-between no-print border-b pb-4 dark:border-slate-800">
+        <h3 class="font-display font-extrabold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-receipt text-teal-600"></i>
+          <span>Form 10BE &bull; Certificate of Donation (Sec 80G(5))</span>
+        </h3>
+        <div class="flex items-center gap-2">
+          <button id="print-10be-btn" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-print"></i> Print Form 10BE
+          </button>
+          <button id="close-10be-modal-btn" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl transition">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form 10BE Printable Certificate Sheet -->
+      <div id="form10be-printable-body" class="p-6 md:p-8 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 space-y-5 text-left text-xs leading-relaxed text-slate-800 dark:text-slate-200">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: WHATSAPP STATUTORY DISPATCHER -->
+  <!-- ========================================================================= -->
+  <div id="whatsapp-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3 dark:border-slate-800">
+        <h3 class="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-emerald-500 text-lg"></i>
+          <span>WhatsApp Compliance Dispatcher</span>
+        </h3>
+        <button id="close-whatsapp-modal-btn" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500">
+        Instantly dispatch formatted statutory compliance briefs and urgent deadline alerts directly to Trustees and Governing Board members.
+      </p>
+
+      <textarea id="whatsapp-text-preview" class="w-full h-44 p-3 text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"></textarea>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button id="copy-whatsapp-btn" class="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-copy"></i> Copy Text
+        </button>
+        <button id="send-whatsapp-btn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+          <i class="fa-brands fa-whatsapp text-sm"></i> Send to Board via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-element" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-950 px-4 py-2.5 rounded-xl shadow-xl text-xs font-semibold hidden flex items-center gap-2">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toast-message">Notification</span>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- APPLICATION ENGINE JAVASCRIPT -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------
+    // STATUTORY DATASETS & REGULATORY DICTIONARIES
+    // -------------------------------------------------------------
+    const CATS = [
+      ["fcra", "FCRA 2010 Regulations"],
+      ["tax", "Income Tax & RNPO Status"],
+      ["reg", "Registrar & Corporate Law"],
+      ["stat", "Statutory, HR & Labour"],
+      ["gov", "Governance & Donors"]
+    ];
+
+    // Priority Checklist Data: [id, category, title, due_period, priority (H/M/L), notes]
+    const D = [
+      ["f1", "fcra", "FCRA 5-Year Registration Certificate Renewal", "Apply 4 months prior to expiry", "H", "Operating past expiry jeopardizes all bank foreign remittances."],
+      ["f2", "fcra", "SBI New Delhi Main Branch Designated Account Only", "Ongoing Remittance", "H", "Foreign contributions must strictly land in New Delhi NDMB."],
+      ["f3", "fcra", "Separate FCRA Utilisation Account Maintained", "Ongoing", "H", "Zero intermingling with domestic bank accounts permitted."],
+      ["f4", "fcra", "Quarterly Foreign Receipts Disclosure on Website", "Within 15 days of quarter end", "H", "Donor name, date, country, and purpose must be public."],
+      ["f5", "fcra", "Annual Return Form FC-4 with CA Audited Financials", "31 Dec for prior FY", "H", "Mandatory filing even if annual foreign receipts are nil."],
+      ["f6", "fcra", "Administrative Spend Kept Strictly Within 20% Cap", "Continuous / Annual", "H", "Calculated on gross FCRA receipts under 2020 amendment."],
+      ["f7", "fcra", "Statutory Prohibition on Sub-Granting Foreign Funds", "Continuous", "H", "Sub-transferring FC funds to another Indian NGO is forbidden."],
+      ["f8", "fcra", "FCRA Books of Accounts Preserved for 6 Years", "Statutory Record Keeping", "M", "Keep original invoices, bills, and donor MoUs."],
+      ["t1", "tax", "12AB / 80G Regular Registration Active", "Renew Form 10AB every 5 years", "H", "Protects donor deductions and trust corpus exemption."],
+      ["t2", "tax", "Accounts Audited in Form 10B / 10BB", "30 September", "H", "Statutory audit report filed prior to ITR-7."],
+      ["t3", "tax", "ITR-7 Return of Income Filed", "31 October", "H", "Late filing invalidates exemption claims for the assessment year."],
+      ["t4", "tax", "Donor Statement Form 10BD & Form 10BE Issued", "31 May", "H", "Donors cannot claim 80G deduction without Form 10BE certificate."],
+      ["t5", "tax", "Quarterly TDS Deposited and Returns Filed", "Deposit 7th, Return quarterly", "H", "Avoid 30% expenditure disallowance under Section 40(a)(ia)."],
+      ["t6", "tax", "85% Application Rule or Form 10 Accumulation", "Before ITR due date", "M", "Accumulation under Sec 11(2) in Sec 11(5) permitted modes."],
+      ["r1", "reg", "Trust or Society Annual Return to Charity Commissioner", "Per State rules", "H", "Mandatory compliance for state-registered public trusts."],
+      ["r2", "reg", "Section 8 MCA Filings: AOC-4, MGT-7, DIR-3 KYC", "30-60 days post AGM", "H", "Applies to Section 8 registered charitable companies."],
+      ["r3", "reg", "AGM and Board of Trustees Meeting Minutes Signed", "Quarterly / Annual", "M", "Ensure quorum, resolutions, and statutory disclosures."],
+      ["r4", "reg", "CSR-1 Registered with Ministry of Corporate Affairs", "One-time registration", "M", "Mandatory prerequisite to receive corporate CSR grants."],
+      ["r5", "reg", "NITI Aayog NGO Darpan Profile Active & Updated", "Annual review", "L", "Required for receiving Central/State government grants."],
+      ["s1", "stat", "GST Returns (GSTR-1 & 3B) if threshold crossed", "Monthly / Quarterly", "M", "Assess commercial sponsorships vs exempt activities."],
+      ["s2", "stat", "EPF & ESI Monthly Deposits by 15th", "Monthly by 15th", "M", "Ensure coverage for qualifying staff and field officers."],
+      ["s3", "stat", "Internal Committee (IC) under POSH Act with Annual Report", "Annual filing", "M", "Mandatory for organizations employing 10 or more staff."],
+      ["s4", "stat", "Professional Tax & Shops/Est. Registration", "Per State Act", "L", "State specific annual compliance."],
+      ["g1", "gov", "Audited Financials Approved & Signed by Board", "Annual AGM", "M", "Formal sign-off by Trustees before auditor sign-off."],
+      ["g2", "gov", "Grant Utilization Certificates (GFR-12A) Submitted", "Per grant cycle", "M", "Prompt donor submission to unlock milestone grants."],
+      ["g3", "gov", "Core Policies Active: Whistleblower, Conflict, Child Protection", "Annual review", "M", "Institutional due diligence prerequisite."],
+      ["g4", "gov", "Fixed Assets Register & Tagging Maintained", "Annual audit", "L", "Physical verification of capitalized equipment."],
+      ["g5", "gov", "DPDP Act 2023 Digital Consent for Donors/Beneficiaries", "Ongoing", "L", "Data protection compliance for sensitive field data."],
+      // Reformed Provisions (2025 RNPO Framework)
+      ["n1", "tax", "RNPO Registration under Section 332 (Form 104/105)", "Per validity tier (5 or 10 yrs)", "H", "Replaces 12AB/10(23C). 10-year validity if income <= 5 Cr."],
+      ["n2", "tax", "Tax Audit Report in Form 112 (Act 2025)", "Check Rules 2026 due date", "H", "Replaces Form 10B/10BB under the Income Tax Act 2025."],
+      ["n3", "tax", "Accumulation Statement in Form 109 under Section 334", "Check Rules 2026", "M", "Replaces Form 10. Allows up to 5-year project accumulation."],
+      ["n4", "tax", "Anonymous Donations Capped (Section 338)", "Continuous check", "H", "Excess over higher of 1 Lakh or 5% taxed flat at 30%."],
+      ["n5", "tax", "Accreted Income Protection Against Revocation", "Continuous", "M", "Replaces Section 115TD to prevent tax at maximum marginal rate."],
+      ["s5", "stat", "Four Labour Codes Compliance: 50% Basic Wage Rule", "Monthly Payroll", "M", "Ensure basic salary is at least 50% of gross CTC."]
+    ];
+
+    // Dates dictionary: [month (1-12), day, title]
+    const DATES = [
+      [1, 15, "FCRA Quarterly Website Disclosure (Q3)"],
+      [1, 31, "TDS Return Filing - Q3"],
+      [4, 15, "FCRA Quarterly Website Disclosure (Q4)"],
+      [5, 31, "Form 10BD Donor Statement & Form 10BE Issue; TDS Q4"],
+      [7, 15, "FCRA Quarterly Website Disclosure (Q1)"],
+      [7, 31, "TDS Return Filing - Q1"],
+      [9, 30, "Tax Audit Report (Form 10B/10BB/112); DIR-3 KYC"],
+      [10, 15, "FCRA Quarterly Website Disclosure (Q2)"],
+      [10, 31, "ITR-7 Return of Income; TDS Q2"],
+      [12, 31, "FCRA Annual Return Form FC-4 with Audit"]
+    ];
+
+    // Regime Mapping: id -> [regime ("old"|"new"|"all"), change_type]
+    const X = {
+      t1: ["old", "old"], t2: ["old", "old"], t4: ["old", "old"], t6: ["old", "old"],
+      t3: ["all", "check"], t5: ["all", "renamed"],
+      n1: ["new", "changed"], n2: ["new", "renamed"], n3: ["new", "renamed"],
+      n4: ["new", "renamed"], n5: ["new", "renamed"], s5: ["all", "changed"],
+      g5: ["all", "new"]
+    };
+
+    const CHANGE_LABELS = {
+      same: "Unchanged", renamed: "Renumbered", changed: "Reformed",
+      new: "New Statutory Duty", check: "Verify Form", old: "Legacy 1961 Only"
+    };
+
+    const STATUS_LABELS = ["Not Started", "In Progress", "Verified / Done", "Not Applicable"];
+
+    // -------------------------------------------------------------
+    // PERSISTENCE STATE & INITIAL DATA
+    // -------------------------------------------------------------
+    const STORAGE_KEY = "npo_compliance_os_v3";
+    
+    let state = {
+      cur: "c1",
+      fy: "2026-27",
+      reg: "new",
+      auditorMode: false,
+      auditorUDIN: "26045892AAAAAA1234",
+      auditorName: "CA Rajesh Agarwal, FCA",
+      clients: [
+        {
+          id: "c1",
+          name: "Aarogya Seva Foundation",
+          type: "Section 8",
+          fcra: true,
+          pan: "AAACA1234F",
+          csr1: "CSR00019284",
+          darpan: "DL/2020/0254198",
+          dates: {
+            fcraExp: "2027-11-30",
+            taxExp: "2028-03-31",
+            agm: "2026-09-25"
+          },
+          s: { f1: 2, f2: 2, f3: 2, f4: 1, f5: 2, f6: 2, f7: 2, t1: 2, t2: 2, t3: 1, t4: 1, t5: 2, t6: 2, r1: 3, r2: 2, r3: 2, r4: 2, r5: 2, s1: 2, s2: 2, s3: 2, n1: 2, n2: 1, n4: 2 },
+          d: {
+            donors: [
+              { id: "d1", name: "Sunita Mittal", pan: "ABCDE1234F", amt: 100000, mode: "Electronic Bank Transfer", date: "2026-06-12", purpose: "Corpus Donation - Health Clinic" },
+              { id: "d2", name: "Vedanta CSR Trust", pan: "AAATV5678G", amt: 500000, mode: "NEFT", date: "2026-08-20", purpose: "Rural Malnutrition Program" }
+            ],
+            fc: {
+              rc: [
+                { dt: "2026-05-10", donor: "Global Health Alliance, UK", amt: 1800000 },
+                { dt: "2026-09-14", donor: "Smile Aid Foundation, USA", amt: 1200000 }
+              ],
+              ad: 380000,
+              pg: 2100000,
+              pub: { 0: true, 1: true, 2: false, 3: false }
+            },
+            taxCalc: { gross: 12000000, app: 9500000, commRev: 1800000, anon: 450000 },
+            payroll: { ctc: 50000, basic: 26000, hra: 14000, allowances: 10000 },
+            grants: [
+              { id: "g1", title: "Project Swasthya Bharat", funder: "HDFC Parivartan CSR", sanctioned: 3500000, spent: 2950000, end: "2027-03-31" }
+            ],
+            conflicts: [
+              { id: "cf1", name: "Dr. Aniruddh Joshi", rel: "Founder / Trustee", payment: 600000, nature: "Medical Director Honorarium", mktApproved: true, sec13Risk: "Low" }
+            ]
+          }
+        }
+      ]
+    };
+
+    let ui = {
+      tab: "dash",
+      filter: "all",
+      search: "",
+      packMode: false,
+      activeCertDonor: null,
+      activeResolution: "auditor"
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.clients)) {
+            state = parsed;
+          }
+        }
+      } catch (err) {
+        console.warn("Storage load fallback:", err);
+      }
+      state.reg = parseInt(state.fy, 10) >= 2026 ? "new" : "old";
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.warn("Storage save error:", err);
+      }
+    }
+
+    function curClient() {
+      return state.clients.find(c => c.id === state.cur) || state.clients[0];
+    }
+
+    function formatINR(n) {
+      return "₹" + Number(n || 0).toLocaleString("en-IN");
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      })[m]);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast-element");
+      const text = document.getElementById("toast-message");
+      if (!el || !text) return;
+      text.textContent = msg;
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 3000);
+    }
+
+    // -------------------------------------------------------------
+    // STATISTICAL & COMPLIANCE SCORING LOGIC
+    // -------------------------------------------------------------
+    function isItemInRegime(itemId) {
+      const mapping = (X[itemId] || [])[0] || "all";
+      return mapping === "all" || mapping === state.reg;
+    }
+
+    function getItems(client) {
+      return D.filter(d => (client.fcra || d[1] !== "fcra") && isItemInRegime(d[0]));
+    }
+
+    function calcStats(client, subset) {
+      const items = subset || getItems(client);
+      let done = 0, na = 0, weightedDone = 0, weightedTotal = 0;
+      const weights = { H: 3, M: 2, L: 1 };
+
+      items.forEach(d => {
+        const status = (client.s && client.s[d[0]]) || 0;
+        const w = weights[d[4]] || 1;
+        if (status === 3) {
+          na++;
+          return;
+        }
+        weightedTotal += w;
+        if (status === 2) {
+          done++;
+          weightedDone += w;
+        } else if (status === 1) {
+          weightedDone += w * 0.5;
+        }
+      });
+
+      const pct = weightedTotal > 0 ? Math.round((weightedDone / weightedTotal) * 100) : 0;
+      return { done, total: items.length - na, na, pct };
+    }
+
+    function getGaps(client) {
+      return getItems(client).filter(d => {
+        const val = (client.s && client.s[d[0]]) || 0;
+        return d[4] === "H" && val !== 2 && val !== 3;
+      });
+    }
+
+    function getToneColor(pct) {
+      if (pct >= 80) return "#10b981"; // Emerald
+      if (pct >= 50) return "#f59e0b"; // Amber
+      return "#f43f5e"; // Rose
+    }
+
+    // -------------------------------------------------------------
+    // SVG COMPLIANCE SCORE GAUGE
+    // -------------------------------------------------------------
+    function renderScoreGauge(pct) {
+      const radius = 54;
+      const circ = 2 * Math.PI * radius;
+      const offset = circ - (circ * pct / 100);
+      const color = getToneColor(pct);
+
+      return `
+        <div class="relative w-36 h-36 flex items-center justify-center">
+          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="${radius}" stroke="currentColor" stroke-width="10" fill="transparent" class="text-slate-200 dark:text-slate-800" />
+            <circle cx="65" cy="65" r="${radius}" stroke="${color}" stroke-width="10" stroke-linecap="round" fill="transparent"
+              stroke-dasharray="${circ}" stroke-dashoffset="${offset}" class="transition-all duration-700 ease-out" />
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span class="font-display font-extrabold text-3xl tracking-tight text-slate-900 dark:text-white">${pct}%</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mt-0.5">Compliant</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // RENDER: SIDEBAR CLIENTS & DATES
+    // -------------------------------------------------------------
+    function renderSidebar() {
+      const client = curClient();
+      const listEl = document.getElementById("clients-list-container");
+      const countEl = document.getElementById("client-count-badge");
+      
+      if (countEl) countEl.textContent = state.clients.length;
+
+      if (listEl) {
+        listEl.innerHTML = state.clients.map(c => {
+          const stats = calcStats(c);
+          const isCur = c.id === state.cur;
+          return `
+            <button data-client-select="${c.id}" class="w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between ${
+              isCur 
+                ? 'bg-teal-50 dark:bg-teal-950/50 border-teal-500/50 text-teal-950 dark:text-teal-200 shadow-xs' 
+                : 'bg-white dark:bg-slate-900 border-transparent hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+            }">
+              <div class="truncate pr-2">
+                <span class="font-bold text-xs block truncate">${escapeHtml(c.name)}</span>
+                <span class="text-[10px] text-slate-400 font-medium">${c.type} ${c.fcra ? '&bull; FCRA' : ''}</span>
+              </div>
+              <span class="font-mono font-bold text-xs px-2 py-0.5 rounded-md ${
+                stats.pct >= 80 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' :
+                stats.pct >= 50 ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' :
+                'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+              }">${stats.pct}%</span>
+            </button>
+          `;
+        }).join("");
+      }
+
+      const datesEl = document.getElementById("sidebar-dates-card");
+      if (datesEl && client) {
+        client.dates = client.dates || {};
+        const dateFields = [
+          { key: "fcraExp", label: "FCRA 5-Yr Expiry", fcraOnly: true },
+          { key: "taxExp", label: "12AB / RNPO Expiry", fcraOnly: false },
+          { key: "agm", label: "Statutory AGM / Board Meet", fcraOnly: false }
+        ];
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        datesEl.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="font-display font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-clock text-teal-600"></i>
+              <span>Entity Expiry Countdown</span>
+            </h3>
+            <span class="text-[10px] text-slate-400 font-mono">Real-time</span>
+          </div>
+
+          <div class="space-y-2">
+            ${dateFields.filter(f => !f.fcraOnly || client.fcra).map(f => {
+              const val = client.dates[f.key] || "";
+              let daysDiff = null;
+              if (val) {
+                const target = new Date(val + "T00:00:00");
+                daysDiff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+              }
+              const isOverdue = daysDiff !== null && daysDiff < 0;
+              const isClose = daysDiff !== null && daysDiff <= 90;
+
+              return `
+                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+                  <div class="flex items-center justify-between text-[11px] mb-1">
+                    <span class="font-medium text-slate-600 dark:text-slate-300">${f.label}</span>
+                    <span class="font-mono font-bold text-[10px] px-1.5 py-0.2 rounded ${
+                      daysDiff === null ? 'bg-slate-200 text-slate-600 dark:bg-slate-700' :
+                      isOverdue ? 'bg-rose-600 text-white animate-pulse' :
+                      isClose ? 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200' :
+                      'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    }">
+                      ${daysDiff === null ? 'Unset' : isOverdue ? `Overdue ${Math.abs(daysDiff)}d` : `${daysDiff}d left`}
+                    </span>
+                  </div>
+                  <input type="date" data-entity-date="${f.key}" value="${val}" class="w-full text-xs font-mono px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: DASHBOARD TAB
+    // -------------------------------------------------------------
+    function renderDashboardTab(client) {
+      const stats = calcStats(client);
+      const gaps = getGaps(client);
+      const now = new Date();
+      const y = now.getFullYear();
+
+      // Key Regulatory Deadlines calculation
+      const keyDateRows = (DATES || []).map(d => {
+        let dt = new Date(y, d[0] - 1, d[1]);
+        if (dt < new Date(y, now.getMonth(), now.getDate())) {
+          dt = new Date(y + 1, d[0] - 1, d[1]);
+        }
+        return { d: d, dt: dt };
+      }).sort((a, b) => a.dt - b.dt);
+
+      const nextUpcoming = keyDateRows[0] || null;
+
+      // Pending changes counter
+      const changeCounts = { new: 0, changed: 0, renamed: 0, check: 0 };
+      const clientItems = getItems(client);
+      clientItems.forEach(d => {
+        const val = (client.s && client.s[d[0]]) || 0;
+        const kind = (X[d[0]] || [])[1];
+        if (kind && val !== 2 && val !== 3 && changeCounts[kind] !== undefined) {
+          changeCounts[kind]++;
+        }
+      });
+
+      return `
+        <div class="space-y-5">
+          <!-- Executive Hero Card -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row items-center gap-6">
+            <div class="shrink-0">
+              ${renderScoreGauge(stats.pct)}
+            </div>
+
+            <div class="flex-1 space-y-2 text-center md:text-left">
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                <h2 class="font-display font-extrabold text-2xl text-slate-900 dark:text-white">
+                  ${escapeHtml(client.name)}
+                </h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  ${client.type}
+                </span>
+                ${client.fcra ? `
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                    <i class="fa-solid fa-earth-americas mr-1"></i>FCRA Designated
+                  </span>
+                ` : ''}
+              </div>
+
+              <p class="text-sm text-slate-600 dark:text-slate-400">
+                <strong>${stats.done}</strong> of <strong>${stats.total}</strong> statutory compliance duties verified 
+                (${stats.na} N/A) &bull; 
+                <span class="${gaps.length > 0 ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold'}">
+                  ${gaps.length} Priority Gaps Open
+                </span>
+              </p>
+
+              <!-- Quick Action Navigation -->
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
+                <button data-nav-tab="list" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-list-check"></i> Master Checklist
+                </button>
+                <button data-nav-tab="taxcalc" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-scale-balanced"></i> 85% Tax Calculator
+                </button>
+                <button data-nav-tab="csr" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-hand-holding-dollar"></i> CSR Due Diligence
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compliance by Area & Regulatory Deadlines Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            
+            <!-- Category Progress -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-chart-pie text-teal-600"></i>
+                  <span>Statutory Coverage by Area</span>
+                </h3>
+                <span class="text-xs font-mono text-slate-400">FY ${state.fy}</span>
+              </div>
+
+              <div class="space-y-3">
+                ${CATS.filter(k => client.fcra || k[0] !== "fcra").map(cat => {
+                  const catItems = clientItems.filter(d => d[1] === cat[0]);
+                  const catStats = calcStats(client, catItems);
+                  const tone = getToneColor(catStats.pct);
+                  return `
+                    <div class="space-y-1">
+                      <div class="flex justify-between text-xs font-medium">
+                        <span class="text-slate-700 dark:text-slate-300">${cat[1]}</span>
+                        <span class="font-mono font-bold" style="color: ${tone}">${catStats.pct}%</span>
+                      </div>
+                      <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-500" style="width: ${catStats.pct}%; background-color: ${tone}"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+
+            <!-- Deadlines Calendar -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-calendar-days text-teal-600"></i>
+                  <span>Statutory Deadline Tracker</span>
+                </h3>
+                <span class="text-xs text-slate-400">Pan-India NGO Dates</span>
+              </div>
+
+              <div class="divide-y divide-slate-100 dark:divide-slate-800 max-h-[260px] overflow-y-auto pr-1">
+                ${keyDateRows.map(r => {
+                  const daysLeft = Math.round((r.dt - new Date(y, now.getMonth(), now.getDate())) / 864e5);
+                  const isNext = nextUpcoming && r === nextUpcoming;
+                  return `
+                    <div class="py-2.5 flex items-center justify-between gap-3 text-xs ${isNext ? 'bg-amber-50/70 dark:bg-amber-950/20 -mx-2 px-2 rounded-xl' : ''}">
+                      <div class="flex items-center gap-2">
+                        <span class="font-mono font-bold px-2 py-0.5 rounded-lg ${isNext ? 'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">
+                          ${r.d[1]} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][r.d[0]-1]}
+                        </span>
+                        <span class="text-slate-700 dark:text-slate-300 font-medium">${r.d[2]}</span>
+                      </div>
+                      <span class="font-mono font-bold shrink-0 ${daysLeft === 0 ? 'text-rose-600 animate-pulse' : daysLeft < 30 ? 'text-amber-600' : 'text-slate-400'}">
+                        ${daysLeft === 0 ? 'Today!' : daysLeft + ' days'}
+                      </span>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Reformed Provisions Summary Banner -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h4 class="font-display font-bold text-xs uppercase tracking-wider text-slate-400">
+                Active Regulatory Transition (${state.reg === 'new' ? 'Income-tax Act 2025 RNPO' : 'Income-tax Act 1961'})
+              </h4>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                ${changeCounts.new} new statutory duties &bull; ${changeCounts.changed} altered thresholds &bull; ${changeCounts.renamed} renumbered forms
+              </p>
+            </div>
+            <button data-nav-tab="chg" class="px-3 py-1.5 text-xs font-bold text-teal-600 hover:text-teal-700 dark:text-teal-400">
+              View Reform Matrix &rarr;
+            </button>
+          </div>
+
+          <!-- High Priority Action Gaps -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+                <span>High-Priority Statutory Compliance Gaps</span>
+              </h3>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full ${gaps.length > 0 ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300' : 'bg-emerald-100 text-emerald-800'}">
+                ${gaps.length} Open
+              </span>
+            </div>
+
+            ${gaps.length > 0 ? `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                ${gaps.slice(0, 6).map(d => {
+                  const statusVal = (client.s && client.s[d[0]]) || 0;
+                  return `
+                    <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 space-y-1.5">
+                      <div class="flex items-start justify-between gap-2">
+                        <span class="text-xs font-bold text-slate-900 dark:text-white">${escapeHtml(d[2])}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                          statusVal === 1 ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700'
+                        }">
+                          ${STATUS_LABELS[statusVal]}
+                        </span>
+                      </div>
+                      <p class="text-[11px] text-slate-500">Timeline: ${escapeHtml(d[3])}</p>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            ` : `
+              <div class="py-6 text-center text-slate-400 text-xs">
+                <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mb-1 block"></i>
+                Zero high-priority statutory non-compliance items detected for this organization.
+              </div>
+            `}
+          </div>
+
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: MASTER CHECKLIST TAB
+    // -------------------------------------------------------------
+    function renderChecklistTab(client) {
+      const items = getItems(client);
+      const filter = ui.filter;
+      const search = (ui.search || "").toLowerCase();
+
+      const filtered = items.filter(d => {
+        const val = (client.s && client.s[d[0]]) || 0;
+        if (filter === "open" && (val === 2 || val === 3)) return false;
+        if (filter === "high" && (d[4] !== "H" || val === 2 || val === 3)) return false;
+        if (filter === "reformed" && !X[d[0]]) return false;
+        if (search && !d[2].toLowerCase().includes(search) && !d[3].toLowerCase().includes(search)) return false;
+        return true;
+      });
+
+      return `
+        <div class="space-y-4">
+          <!-- Filters & Search Toolbar -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${[
+                ["all", "All Duties"],
+                ["open", "Pending / In Progress"],
+                ["high", "High Priority"],
+                ["reformed", "2025 Reforms"]
+              ].map(([k, label]) => `
+                <button data-filter="${k}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                  filter === k 
+                    ? 'bg-teal-600 text-white shadow-xs' 
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                }">
+                  ${label}
+                </button>
+              `).join("")}
+            </div>
+
+            <div class="relative w-full sm:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+              <input type="text" id="checklist-search-input" value="${escapeHtml(ui.search)}" placeholder="Search statutory requirement..." class="w-full text-xs pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Checklist Rows Grouped by Category -->
+          <div class="space-y-4">
+            ${CATS.filter(k => client.fcra || k[0] !== "fcra").map(cat => {
+              const catRows = filtered.filter(d => d[1] === cat[0]);
+              if (catRows.length === 0) return "";
+              const catStats = calcStats(client, items.filter(d => d[1] === cat[0]));
+
+              return `
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+                  <div class="flex items-center justify-between border-b pb-2 dark:border-slate-800">
+                    <h3 class="font-display font-bold text-sm text-slate-900 dark:text-white">
+                      ${cat[1]}
+                    </h3>
+                    <span class="text-xs font-mono font-bold text-teal-600 dark:text-teal-400">
+                      ${catStats.done}/${catStats.total} Satisfied (${catStats.pct}%)
+                    </span>
+                  </div>
+
+                  <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                    ${catRows.map(d => {
+                      const val = (client.s && client.s[d[0]]) || 0;
+                      const note = (client.d && client.d['note_' + d[0]]) || "";
+                      const verifier = (client.d && client.d['ver_' + d[0]]) || "";
+
+                      return `
+                        <div class="py-3 flex flex-col sm:flex-row sm:items-start justify-between gap-3 text-xs">
+                          <div class="flex-1 space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                              <span class="font-bold text-slate-900 dark:text-white">${escapeHtml(d[2])}</span>
+                              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                d[4] === 'H' ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300' :
+                                d[4] === 'M' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' :
+                                'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                              }">
+                                ${d[4] === 'H' ? 'High' : d[4] === 'M' ? 'Medium' : 'Low'}
+                              </span>
+                              ${X[d[0]] ? `
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300">
+                                  ${CHANGE_LABELS[X[d[0]][1]] || 'Reformed'}
+                                </span>
+                              ` : ''}
+                            </div>
+                            <p class="text-[11px] text-slate-500">${escapeHtml(d[3])} ${d[5] ? `&bull; <span class="italic">${escapeHtml(d[5])}</span>` : ''}</p>
+                            
+                            <!-- Inline Verification Note -->
+                            <div class="pt-1 flex items-center gap-2">
+                              <input type="text" data-checklist-note="${d[0]}" value="${escapeHtml(note)}" placeholder="Add evidence link / reference..." class="text-[11px] px-2 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg w-full max-w-sm">
+                              ${verifier ? `
+                                <span class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 shrink-0">
+                                  <i class="fa-solid fa-stamp"></i> ${escapeHtml(verifier)}
+                                </span>
+                              ` : ''}
+                            </div>
+                          </div>
+
+                          <!-- Status Toggle Button -->
+                          <div class="shrink-0 flex items-center gap-2">
+                            <button data-cycle-status="${d[0]}" class="px-3 py-1.5 rounded-xl font-bold text-xs transition shadow-xs ${
+                              val === 2 ? 'bg-emerald-600 text-white hover:bg-emerald-700' :
+                              val === 1 ? 'bg-amber-500 text-white hover:bg-amber-600' :
+                              val === 3 ? 'bg-slate-200 dark:bg-slate-800 text-slate-500' :
+                              'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                            }">
+                              ${val === 2 ? '<i class="fa-solid fa-circle-check mr-1"></i> Done' :
+                                val === 1 ? '<i class="fa-solid fa-spinner mr-1"></i> In Progress' :
+                                val === 3 ? 'N/A' : 'Pending'}
+                            </button>
+                          </div>
+                        </div>
+                      `;
+                    }).join("")}
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: STATUTORY 85% & TAX CALCULATORS
+    // -------------------------------------------------------------
+    function renderTaxCalcTab(client) {
+      client.d = client.d || {};
+      const tc = client.d.taxCalc = client.d.taxCalc || {
+        gross: 12000000,
+        app: 9500000,
+        commRev: 1800000,
+        anon: 450000
+      };
+
+      const gross = Number(tc.gross) || 0;
+      const app = Number(tc.app) || 0;
+      const target85 = Math.round(gross * 0.85);
+      const appPct = gross > 0 ? ((app / gross) * 100).toFixed(1) : 0;
+      const shortfall = Math.max(0, target85 - app);
+
+      // GPU Commercial 20% limit
+      const commRev = Number(tc.commRev) || 0;
+      const commPct = gross > 0 ? ((commRev / gross) * 100).toFixed(1) : 0;
+      const commLimit = Math.round(gross * 0.20);
+      const isCommSafe = commRev <= commLimit;
+
+      // Anonymous Donations 30% tax
+      const anon = Number(tc.anon) || 0;
+      const anonThreshold = Math.max(100000, Math.round(gross * 0.05));
+      const taxableAnon = Math.max(0, anon - anonThreshold);
+      const anonTaxLiability = Math.round(taxableAnon * 0.30);
+
+      return `
+        <div class="space-y-5">
+          <!-- 85% Application Engine -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b pb-3 dark:border-slate-800">
+              <div>
+                <h3 class="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-scale-balanced text-teal-600"></i>
+                  <span>Statutory 85% Application &amp; Shortfall Accumulator</span>
+                </h3>
+                <p class="text-xs text-slate-500">Section 11(1) / Section 334 RNPO Accumulation Rules</p>
+              </div>
+              <span class="font-mono text-xs font-bold px-3 py-1 rounded-full ${shortfall > 0 ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800'}">
+                ${shortfall > 0 ? `Shortfall: ${formatINR(shortfall)}` : '85% Application Satisfied'}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Gross Annual Receipts / Income (₹)</label>
+                <input type="number" data-tc="gross" value="${gross}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Actual Amount Applied to Charitable Objects (₹)</label>
+                <input type="number" data-tc="app" value="${app}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+              </div>
+            </div>
+
+            <!-- Ratios Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <span class="text-[10px] text-slate-400 font-bold uppercase block">Mandatory 85% Spend</span>
+                <span class="font-mono font-bold text-sm text-slate-900 dark:text-white">${formatINR(target85)}</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <span class="text-[10px] text-slate-400 font-bold uppercase block">Actual Ratio Achieved</span>
+                <span class="font-mono font-bold text-sm ${shortfall > 0 ? 'text-amber-600' : 'text-emerald-600'}">${appPct}%</span>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <span class="text-[10px] text-slate-400 font-bold uppercase block">Form 10 / Form 109 Required</span>
+                <span class="font-mono font-bold text-sm text-slate-900 dark:text-white">${shortfall > 0 ? formatINR(shortfall) : 'Nil'}</span>
+              </div>
+            </div>
+
+            ${shortfall > 0 ? `
+              <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs space-y-2">
+                <div class="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-200">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <span>Statutory Shortfall Action Needed: File Form 10 / Form 109</span>
+                </div>
+                <p class="text-amber-800 dark:text-amber-300">
+                  To protect tax exemption on the shortfall of <strong>${formatINR(shortfall)}</strong>, the Trustees must pass a formal resolution to accumulate under Section 11(2) and invest in Section 11(5) modes before filing the return of income.
+                </p>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- GPU Commercial 20% & Anonymous Donations Dual Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            
+            <!-- Proviso to Section 2(15) GPU 20% Monitor -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-store text-teal-600"></i>
+                  <span>Commercial Activity 20% Ceiling</span>
+                </h4>
+                <span class="text-xs font-mono font-bold ${isCommSafe ? 'text-emerald-600' : 'text-rose-600'}">
+                  ${commPct}% (Max 20%)
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                General Public Utility (GPU) entities forfeit tax exemption if incidental trade receipts exceed 20% of gross receipts.
+              </p>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Commercial / Fee Receipts (₹)</label>
+                <input type="number" data-tc="commRev" value="${commRev}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+              </div>
+              <div class="p-3 rounded-xl ${isCommSafe ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300' : 'bg-rose-50 dark:bg-rose-950 text-rose-800 dark:text-rose-200'} text-xs">
+                ${isCommSafe 
+                  ? `Compliant: Room remaining of ${formatINR(Math.max(0, commLimit - commRev))} before 20% threshold is reached.`
+                  : `EXCEEDED: Commercial receipts exceed 20% limit of ${formatINR(commLimit)}. Risk of complete exemption loss!`
+                }
+              </div>
+            </div>
+
+            <!-- Anonymous Donations 30% Tax (Sec 115BBC) -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i class="fa-solid fa-user-secret text-purple-600"></i>
+                  <span>Anonymous Donations Tax (Sec 115BBC)</span>
+                </h4>
+                <span class="text-xs font-mono font-bold text-purple-600">
+                  Flat 30% Tax
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                Anonymous donations exceeding higher of ₹1 Lakh or 5% of donations are taxed at 30%.
+              </p>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Anonymous / Untagged Receipts (₹)</label>
+                <input type="number" data-tc="anon" value="${anon}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs space-y-1">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">Safe-Harbor Threshold:</span>
+                  <span class="font-mono font-bold">${formatINR(anonThreshold)}</span>
+                </div>
+                <div class="flex justify-between font-bold ${anonTaxLiability > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                  <span>30% Tax Liability:</span>
+                  <span class="font-mono">${formatINR(anonTaxLiability)}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: DONOR 80G / FORM 10BD & 10BE CERTIFICATES
+    // -------------------------------------------------------------
+    function renderDonorTab(client) {
+      client.d = client.d || {};
+      const donors = client.d.donors = client.d.donors || [];
+      const totalDonations = donors.reduce((acc, d) => acc + (Number(d.amt) || 0), 0);
+
+      return `
+        <div class="space-y-5">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice-dollar text-teal-600"></i>
+                <span>Section 80G Donor Statement &amp; Form 10BE Engine</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Maintain donor KYC, export direct Form 10BD upload CSVs, and generate individual Form 10BE Certificates.
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 font-bold uppercase block">Total Eligible Donations</span>
+              <span class="font-mono font-bold text-lg text-teal-600 dark:text-teal-400">${formatINR(totalDonations)}</span>
+            </div>
+          </div>
+
+          <!-- Add Donor Form -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wider text-slate-400">
+              Record New Donor Contribution
+            </h4>
+            <form id="add-donor-form" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+              <input type="text" id="dn-name" placeholder="Donor Legal Name" required class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="text" id="dn-pan" placeholder="PAN (e.g. ABCDE1234F)" required class="text-xs font-mono uppercase px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="number" id="dn-amt" placeholder="Amount (₹)" required class="text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <select id="dn-mode" class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                <option value="Electronic Bank Transfer">Electronic Transfer / NEFT</option>
+                <option value="Cheque / Draft">Cheque / Demand Draft</option>
+                <option value="Cash">Cash (Max 2,000 for 80G)</option>
+              </select>
+              <button type="submit" class="py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-xs">
+                Log Contribution
+              </button>
+            </form>
+          </div>
+
+          <!-- Donors Table -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">
+                Donor Contributions Ledger (${donors.length})
+              </h4>
+              <button id="export-10bd-csv-btn" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-file-csv text-teal-600"></i> Export Form 10BD CSV
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-semibold">
+                    <th class="py-2 px-3">Donor Name</th>
+                    <th class="py-2 px-3">PAN</th>
+                    <th class="py-2 px-3">Mode</th>
+                    <th class="py-2 px-3 text-right">Amount (INR)</th>
+                    <th class="py-2 px-3 text-center">Form 10BE</th>
+                    <th class="py-2 px-3 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                  ${donors.map((d, idx) => `
+                    <tr>
+                      <td class="py-2.5 px-3 font-bold text-slate-900 dark:text-white">${escapeHtml(d.name)}</td>
+                      <td class="py-2.5 px-3 font-mono text-slate-500">${escapeHtml(d.pan)}</td>
+                      <td class="py-2.5 px-3 text-slate-500">${escapeHtml(d.mode)}</td>
+                      <td class="py-2.5 px-3 font-mono font-bold text-right text-slate-900 dark:text-white">${formatINR(d.amt)}</td>
+                      <td class="py-2.5 px-3 text-center">
+                        <button type="button" data-generate-10be="${idx}" class="btn-view-10be px-3 py-1.5 bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto shadow-xs">
+                          <i class="fa-solid fa-receipt text-[11px]"></i>
+                          <span>View Cert</span>
+                        </button>
+                      </td>
+                      <td class="py-2.5 px-3 text-center">
+                        <button data-remove-donor="${idx}" class="text-slate-300 hover:text-rose-500">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: FCRA TRACKER & 20% EXPENSE CAP
+    // -------------------------------------------------------------
+    function renderFCRATab(client) {
+      if (!client.fcra) {
+        return `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center text-slate-400 text-xs">
+            <i class="fa-solid fa-lock text-3xl mb-2 text-slate-300"></i>
+            <p>This organization is not flagged as holding an active FCRA registration.</p>
+          </div>
+        `;
+      }
+
+      client.d = client.d || {};
+      const fc = client.d.fc = client.d.fc || { rc: [], ad: 0, pg: 0, pub: {} };
+      const totalReceipts = fc.rc.reduce((a, b) => a + (Number(b.amt) || 0), 0);
+      const adminSpend = Number(fc.ad) || 0;
+      const progSpend = Number(fc.pg) || 0;
+      const adminRatio = totalReceipts > 0 ? ((adminSpend / totalReceipts) * 100).toFixed(1) : 0;
+      const isBreached = adminRatio > 20;
+
+      return `
+        <div class="space-y-5">
+          <!-- 20% Cap Alert Banner -->
+          <div class="p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+            isBreached 
+              ? 'bg-rose-50 border-rose-300 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200' 
+              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'
+          }">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full ${isBreached ? 'bg-rose-600 text-white' : 'bg-teal-100 text-teal-800'}">
+                  FCRA 2020 Amendment
+                </span>
+                <span class="text-xs font-bold">20% Administrative Expense Ceiling</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Foreign contribution administrative expenses cannot exceed 20% of foreign contributions received during the year.
+              </p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block">Current Admin Share</span>
+              <span class="font-mono font-bold text-lg ${isBreached ? 'text-rose-600 animate-pulse' : 'text-emerald-600'}">
+                ${adminRatio}% (Max 20%)
+              </span>
+            </div>
+          </div>
+
+          <!-- Financial Inputs Grid -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Total FC Receipts (₹)</label>
+              <div class="font-mono font-bold text-base px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-900 dark:text-white">
+                ${formatINR(totalReceipts)}
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Administrative Expenses (₹)</label>
+              <input type="number" data-fc-field="ad" value="${adminSpend}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Program / Core Spends (₹)</label>
+              <input type="number" data-fc-field="pg" value="${progSpend}" class="w-full text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl">
+            </div>
+          </div>
+
+          <!-- Foreign Remittances Log -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wider text-slate-400">
+              Log Remittance Received at SBI NDMB
+            </h4>
+            <form id="add-fc-receipt-form" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <input type="date" id="fc-dt" required class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="text" id="fc-donor" placeholder="Foreign Funder / Institution" required class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="number" id="fc-amt" placeholder="Amount (₹)" required class="text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <button type="submit" class="py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-xs">
+                Add FC Receipt
+              </button>
+            </form>
+
+            <div class="divide-y divide-slate-100 dark:divide-slate-800 pt-3">
+              ${fc.rc.map((r, i) => `
+                <div class="py-2 flex items-center justify-between text-xs">
+                  <div>
+                    <span class="font-bold text-slate-900 dark:text-white">${escapeHtml(r.donor)}</span>
+                    <span class="text-slate-400 text-[11px] block">${r.dt}</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-slate-900 dark:text-white">${formatINR(r.amt)}</span>
+                    <button data-remove-fc-receipt="${i}" class="text-slate-300 hover:text-rose-500">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: CSR DATA ROOM & DUE DILIGENCE
+    // -------------------------------------------------------------
+    function renderCSRTab(client) {
+      const criteria = [
+        { title: "MCA CSR-1 Registration Certificate Active", weight: 15, ok: !!client.csr1 },
+        { title: "Active 12AB / Section 332 RNPO Registration", weight: 20, ok: true },
+        { title: "Valid 80G Tax Exemption Certificate", weight: 15, ok: true },
+        { title: "3 Financial Years Audited Financials & ITR-7", weight: 20, ok: true },
+        { title: "NITI Aayog NGO Darpan Registration Valid", weight: 10, ok: !!client.darpan },
+        { title: "Internal Committee (IC) Constituted under POSH", weight: 10, ok: true },
+        { title: "Board Minutes & Key Trustee KYC Updated", weight: 10, ok: true }
+      ];
+
+      const totalScore = criteria.reduce((acc, c) => acc + (c.ok ? c.weight : 0), 0);
+      const grade = totalScore >= 90 ? "A+ Prime Institutional" : totalScore >= 75 ? "A Ready" : "B Action Needed";
+
+      return `
+        <div class="space-y-5">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300">Corporate CSR Audit</span>
+              <h3 class="font-display font-extrabold text-xl text-slate-900 dark:text-white mt-1">
+                Institutional Due Diligence Scorecard
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Evaluated against the criteria demanded by Tata Trusts, Reliance Foundation, and HDFC Parivartan.
+              </p>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border text-right">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block">Diligence Rating</span>
+              <span class="font-display font-extrabold text-xl text-teal-600">${totalScore}/100 &bull; ${grade}</span>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">
+              Mandatory CSR Due Diligence Parameters
+            </h4>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800">
+              ${criteria.map(c => `
+                <div class="py-2.5 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid ${c.ok ? 'fa-circle-check text-emerald-500' : 'fa-circle-xmark text-rose-500'}"></i>
+                    <span class="font-medium text-slate-700 dark:text-slate-300">${c.title}</span>
+                  </div>
+                  <span class="font-mono font-bold ${c.ok ? 'text-emerald-600' : 'text-slate-400'}">
+                    +${c.weight} Pts
+                  </span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: BOARD GOVERNANCE & RESOLUTIONS
+    // -------------------------------------------------------------
+    function renderGovernanceTab(client) {
+      const templates = {
+        auditor: {
+          title: "Statutory Auditor Appointment",
+          body: `RESOLVED THAT pursuant to the provisions of the bye-laws and applicable statutory provisions, M/s [Auditor Firm Name], Chartered Accountants (FRN: [FRN]), be and are hereby appointed as the Statutory Auditors of ${client.name} for the Financial Year ${state.fy} on such remuneration as mutually agreed.`
+        },
+        accum: {
+          title: "Section 11(2) / Section 334 Accumulation",
+          body: `RESOLVED THAT out of the income of ${client.name} for the previous year relevant to the Assessment Year, a sum of ₹[Amount] be accumulated under Section 11(2) of the Act for a period of [5] years for the specific charitable purpose of '[Project Title]' and be invested in modes specified under Section 11(5).`
+        },
+        csr: {
+          title: "Acceptance of Corporate CSR Grant",
+          body: `RESOLVED THAT the consent of the Governing Board be and is hereby accorded to enter into a Grant Agreement with [Corporate Donor] for the project titled '[Project Name]' with a total budget of ₹[Amount], and that [Authorized Trustee] be authorized to sign the MoU and submit Utilization Certificates.`
+        }
+      };
+
+      const active = templates[ui.activeResolution] || templates.auditor;
+
+      return `
+        <div class="space-y-5">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <h3 class="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-gavel text-teal-600"></i>
+              <span>Legal Board Resolution Drafter</span>
+            </h3>
+            
+            <div class="flex items-center gap-2 flex-wrap pt-1">
+              ${Object.keys(templates).map(k => `
+                <button data-res-select="${k}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                  ui.activeResolution === k ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300'
+                }">
+                  ${templates[k].title}
+                </button>
+              `).join("")}
+            </div>
+
+            <div class="mt-3">
+              <textarea id="resolution-textarea" class="w-full h-36 p-3 text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl leading-relaxed">${active.body}</textarea>
+              <div class="mt-2 flex justify-end">
+                <button id="copy-resolution-btn" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5">
+                  <i class="fa-solid fa-copy"></i> Copy Draft Resolution
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: WHAT CHANGED (REFORM COMPARISON MATRIX)
+    // -------------------------------------------------------------
+    function renderReformTab() {
+      const rows = [
+        ["Sector Nomenclature", "Trusts & Societies treated separately", "Registered Non-Profit Organizations (RNPOs)", "Renamed"],
+        ["Governing Chapter", "Sec 10(23C), 11, 12, 12A, 12AB, 13", "Sections 332 to 355 (Income-tax Act 2025)", "Renumbered"],
+        ["Registration Forms", "Form 10A (Provisional), 10AB (Regular)", "Form 104 (Provisional), 105 (Regular)", "Renamed"],
+        ["Registration Validity", "3 Yrs Provisional, 5 Yrs Regular", "3 Yrs Provisional; 5 Yrs Regular, or 10 Yrs if Receipts <= 5 Cr", "Reformed"],
+        ["Tax Audit Report", "Form 10B / Form 10BB", "Form 112 (Check Rules 2026)", "Renumbered"],
+        ["Accumulation Statement", "Form 10 under Sec 11(2)", "Form 109 under Sec 334", "Renumbered"],
+        ["Anonymous Donations", "30% Tax under Sec 115BBC", "30% Specified Income under Sec 338", "Reformed"]
+      ];
+
+      return `
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-4">
+          <div>
+            <h3 class="font-display font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-code-compare text-teal-600"></i>
+              <span>Income Tax Act 1961 vs. Income Tax Act 2025 RNPO Framework</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Review changes taking effect from Assessment Year 2026-27 under the unified Direct Tax Code reforms.
+            </p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-semibold">
+                  <th class="py-2.5 px-3">Statutory Feature</th>
+                  <th class="py-2.5 px-3">Act 1961 (Legacy)</th>
+                  <th class="py-2.5 px-3">Act 2025 (RNPO)</th>
+                  <th class="py-2.5 px-3">Transition Impact</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                ${rows.map(r => `
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900 dark:text-white">${r[0]}</td>
+                    <td class="py-3 px-3 text-slate-600 dark:text-slate-400">${r[1]}</td>
+                    <td class="py-3 px-3 font-semibold text-teal-600 dark:text-teal-400">${r[2]}</td>
+                    <td class="py-3 px-3">
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                        ${r[3]}
+                      </span>
+                    </td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // TOP NAVIGATION TAB DEFINITIONS
+    // -------------------------------------------------------------
+    const TABS_CONFIG = [
+      ["dash", "Dashboard", "fa-gauge-high"],
+      ["list", "Master Checklist", "fa-list-check"],
+      ["taxcalc", "85% & Tax Calculator", "fa-scale-balanced"],
+      ["10be", "80G & Form 10BE", "fa-file-invoice-dollar"],
+      ["fct", "FCRA & 20% Cap", "fa-earth-americas"],
+      ["notices", "AI Notice Defense", "fa-shield-halved"],
+      ["grants", "Grant UC (GFR-12A)", "fa-file-signature"],
+      ["csr", "CSR Data Room", "fa-hand-holding-dollar"],
+      ["gov", "Governance & Minutes", "fa-gavel"],
+      ["chg", "Reform Matrix 2025", "fa-code-compare"]
+    ];
+
+    function renderNavTabs() {
+      const navEl = document.getElementById("module-tabs-nav");
+      if (!navEl) return;
+      navEl.innerHTML = TABS_CONFIG.map(([id, label, icon]) => `
+        <button data-nav-tab="${id}" class="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 whitespace-nowrap transition-all ${
+          ui.tab === id 
+            ? 'bg-teal-600 text-white shadow-xs' 
+            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+        }">
+          <i class="fa-solid ${icon} text-xs"></i>
+          <span>${label}</span>
+        </button>
+      `).join("");
+    }
+
+    // -------------------------------------------------------------
+    // MAIN APP RENDER ROUTER
+    // -------------------------------------------------------------
+    function renderApp() {
+      const client = curClient();
+      renderNavTabs();
+      renderSidebar();
+
+      const mainEl = document.getElementById("main-content-mount");
+      if (!mainEl) return;
+
+      if (!client) {
+        mainEl.innerHTML = `
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-12 text-center space-y-3">
+            <h2 class="font-display font-bold text-lg text-slate-800 dark:text-slate-200">No Non-Profit Organizations Active</h2>
+            <p class="text-xs text-slate-500">Use the left sidebar to add your first NGO.</p>
+          </div>
+        `;
+        return;
+      }
+
+      switch (ui.tab) {
+        case "dash":
+          mainEl.innerHTML = renderDashboardTab(client);
+          break;
+        case "list":
+          mainEl.innerHTML = renderChecklistTab(client);
+          break;
+        case "taxcalc":
+          mainEl.innerHTML = renderTaxCalcTab(client);
+          break;
+        case "10be":
+          mainEl.innerHTML = renderDonorTab(client);
+          break;
+        case "fct":
+          mainEl.innerHTML = renderFCRATab(client);
+          break;
+        case "csr":
+          mainEl.innerHTML = renderCSRTab(client);
+          break;
+        case "notices":
+          mainEl.innerHTML = renderNoticesTab(client);
+          break;
+        case "grants":
+          mainEl.innerHTML = renderGrantsTab(client);
+          break;
+        case "gov":
+          mainEl.innerHTML = renderGovernanceTab(client);
+          break;
+        case "chg":
+          mainEl.innerHTML = renderReformTab();
+          break;
+        default:
+          mainEl.innerHTML = renderDashboardTab(client);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: AI NOTICE DEFENSE & PENALTY SHIELD
+    // -------------------------------------------------------------
+    function renderNoticesTab(client) {
+      const templates = {
+        s148: {
+          title: "Section 148A Reassessment Notice Rebuttal",
+          desc: "Defense petition challenging arbitrary reopening of tax assessment for charitable entities.",
+          body: `BEFORE THE ASSESSING OFFICER / NATIONAL FACELESS ASSESSMENT CENTRE
+IN THE MATTER OF: ${client.name}
+PAN: ${client.pan || 'AAATA1234F'} | ASSESSMENT YEAR: ${state.fy}
+SUBJECT: OBJECTIONS AGAINST NOTICE UNDER SECTION 148A(b) OF THE INCOME-TAX ACT
+
+Respected Sir/Madam,
+
+The Assessee is a registered Non-Profit Organization holding valid registration under Section 12A/12AB / Section 332 of the Act. In response to the notice alleging unexplained receipt of funds, the Assessee submits as under:
+
+1. ALL RECEIPTS FULLY DISCLOSED: All funds received represent genuine voluntary contributions / grants received through regular banking channels, duly recorded in audited books of account and reported in Form 10BD / ITR-7.
+2. APPLICATION STATUTE MET: More than 85% of receipts have been applied exclusively towards the registered charitable objects of healthcare/education/relief of poverty.
+3. NO INCOME CHARGEABLE HAS ESCAPED: The provisions of Section 148 are not attracted as no bogus expenditure or anonymous sums exist.
+
+Prayer: It is respectfully prayed that the proposed proceedings under Section 148 may kindly be dropped in the interest of justice.
+
+For ${client.name}
+Authorized Signatory / Trustee`
+        },
+        condon: {
+          title: "Sec 119(2)(b) Delay Condonation Petition",
+          desc: "Application to Central Board of Direct Taxes (CBDT) for condonation of delay in filing Form 10 / Form 10B audit report.",
+          body: `TO THE PRINCIPAL CHIEF COMMISSIONER OF INCOME TAX (EXEMPTIONS)
+APPLICATION UNDER SECTION 119(2)(b) FOR CONDONATION OF DELAY IN FILING FORM 10 / FORM 10B
+
+Applicant: ${client.name} (PAN: ${client.pan || 'AAATA1234F'})
+Assessment Year: ${state.fy}
+
+The applicant submits the following genuine hardship grounds:
+1. Due to technical portal latency and server maintenance on the Income Tax e-filing portal on the statutory due date, the audit report in Form 10B could not be successfully uploaded.
+2. The audited financials were duly approved by the Trustees on or before the due date, demonstrating bonafide intent.
+3. In view of CBDT Circular No. 16/2022 and settled judicial precedent in Dalmia Trust, genuine procedural delays should not deprive a charitable entity of substantive exemption.
+
+Prayer: We humbly request your good office to condone the unintentional delay of [Number] days in filing the requisite form.
+
+Yours faithfully,
+Trustee, ${client.name}`
+        },
+        fcra13: {
+          title: "FCRA Rule 13 Delay Clarification",
+          desc: "Official explanation to Ministry of Home Affairs (MHA) for inadvertent delay in quarterly foreign receipt website upload.",
+          body: `TO THE DIRECTOR (FCRA), FOREIGNERS DIVISION
+MINISTRY OF HOME AFFAIRS, NEW DELHI
+
+SUBJECT: CLARIFICATION REGARDING QUARTERLY DISCLOSURE UNDER RULE 13 OF FCR RULES, 2010
+
+Registration No: [FCRA Registration Number]
+Organization: ${client.name}
+
+Sir,
+With reference to the foreign contribution received in the designated SBI NDMB account during the quarter [Quarter Name], we clarify that:
+1. All foreign receipts were exclusively utilized in accordance with the registered objects and within the 20% administrative expense limit.
+2. The delay in publishing on the website was occasioned by an unavoidable server migration of the domain hosting provider.
+3. The disclosure table has now been uploaded in full detail with donor names, purposes, and amounts.
+
+We tender an unconditional apology for the delay and assure strict adherence going forward.
+
+Yours sincerely,
+Chief Functionary, ${client.name}`
+        }
+      };
+
+      const selKey = ui.selectedNotice || "s148";
+      const selTemplate = templates[selKey] || templates.s148;
+
+      return `
+        <div class="space-y-5">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">Penalty Shield Engine</span>
+              <h3 class="font-display font-extrabold text-xl text-slate-900 dark:text-white mt-1">
+                Statutory Notice Defense &amp; Rebuttal Studio
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Generate high-court benchmarked legal replies to protect 12AB/RNPO exemption and avert cancellations.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="copy-defense-btn" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-copy"></i> Copy Legal Petition
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Left Template Picker -->
+            <div class="lg:col-span-4 space-y-2.5">
+              ${Object.keys(templates).map(k => `
+                <button data-select-notice="${k}" class="w-full text-left p-3.5 rounded-2xl border transition-all ${
+                  selKey === k 
+                    ? 'bg-teal-50 dark:bg-teal-950/60 border-teal-500 text-teal-950 dark:text-teal-200 shadow-sm' 
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                }">
+                  <span class="font-bold text-xs block">${templates[k].title}</span>
+                  <span class="text-[11px] text-slate-500 line-clamp-2 mt-1">${templates[k].desc}</span>
+                </button>
+              `).join("")}
+            </div>
+
+            <!-- Right Legal Draft Editor -->
+            <div class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">
+                  ${selTemplate.title}
+                </h4>
+                <span class="text-xs font-mono text-slate-400">Ready to file draft</span>
+              </div>
+              <textarea id="defense-textarea" class="w-full h-80 p-3.5 text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl leading-relaxed">${selTemplate.body}</textarea>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // MODULE: GRANT UTILIZATION CERTIFICATES (GFR-12A)
+    // -------------------------------------------------------------
+    function renderGrantsTab(client) {
+      client.d = client.d || {};
+      const grants = client.d.grants = client.d.grants || [];
+
+      return `
+        <div class="space-y-5">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">Grant Governance</span>
+              <h3 class="font-display font-extrabold text-xl text-slate-900 dark:text-white mt-1">
+                Institutional Grant Utilization &amp; GFR-12A Engine
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Track project burn-rates and issue statutory Form GFR-12A Utilization Certificates for milestone disbursements.
+              </p>
+            </div>
+          </div>
+
+          <!-- Add Project Grant Form -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wider text-slate-400">
+              Register Funded Project / Grant
+            </h4>
+            <form id="add-grant-form" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <input type="text" id="gr-title" placeholder="Project Title" required class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="text" id="gr-funder" placeholder="Donor / Funder (e.g. Tata Trusts)" required class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <input type="number" id="gr-amt" placeholder="Sanctioned Amount (₹)" required class="text-xs font-mono font-bold px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <button type="submit" class="py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-xs">
+                Log Grant Project
+              </button>
+            </form>
+          </div>
+
+          <!-- Grants List -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${grants.map((g, idx) => {
+              const spent = Number(g.spent) || 0;
+              const sanctioned = Number(g.sanctioned) || 1;
+              const burnPct = Math.min(100, Math.round((spent / sanctioned) * 100));
+
+              return `
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm space-y-3">
+                  <div class="flex items-start justify-between">
+                    <div>
+                      <h4 class="font-bold text-sm text-slate-900 dark:text-white">${escapeHtml(g.title)}</h4>
+                      <span class="text-xs text-slate-400">${escapeHtml(g.funder)}</span>
+                    </div>
+                    <button data-remove-grant="${idx}" class="text-slate-300 hover:text-rose-500">
+                      <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                  </div>
+
+                  <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-mono font-semibold">
+                      <span class="text-slate-500">Utilized: ${formatINR(spent)}</span>
+                      <span class="text-teal-600">${burnPct}% Burned</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                      <div class="bg-teal-600 h-full rounded-full" style="width: ${burnPct}%"></div>
+                    </div>
+                    <div class="text-right text-[11px] text-slate-400">Total Grant: ${formatINR(sanctioned)}</div>
+                  </div>
+
+                  <div class="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+                    <button data-gfr12a-grant="${idx}" class="px-3 py-1.5 bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300 hover:bg-teal-100 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                      <i class="fa-solid fa-file-pdf"></i> Generate GFR-12A UC
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------
+    // EVENT LISTENERS & DOM DELEGATION
+    // -------------------------------------------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+      loadState();
+
+      // Theme initializer
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      }
+
+      // Theme toggle
+      const themeBtn = document.getElementById("theme-toggle-btn");
+      if (themeBtn) {
+        themeBtn.addEventListener("click", () => {
+          document.documentElement.classList.toggle("dark");
+        });
+      }
+
+      // Sidebar mobile drawer toggle
+      const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener("click", () => {
+          const drawer = document.getElementById("sidebar-drawer");
+          if (drawer) drawer.classList.toggle("hidden");
+        });
+      }
+
+      // FY Selector
+      const fySelect = document.getElementById("fy-select");
+      if (fySelect) {
+        fySelect.value = state.fy;
+        fySelect.addEventListener("change", (e) => {
+          state.fy = e.target.value;
+          state.reg = parseInt(state.fy, 10) >= 2026 ? "new" : "old";
+          const badge = document.getElementById("regime-badge");
+          if (badge) {
+            badge.textContent = state.reg === "new" ? "Act 2025 RNPO" : "Act 1961 Legacy";
+          }
+          saveState();
+          renderApp();
+          showToast(`Switched to FY ${state.fy}`);
+        });
+      }
+
+      // Auditor Mode Toggle
+      const auditorBtn = document.getElementById("auditor-toggle-btn");
+      if (auditorBtn) {
+        auditorBtn.addEventListener("click", () => {
+          state.auditorMode = !state.auditorMode;
+          const statusText = document.getElementById("auditor-status-text");
+          if (statusText) {
+            statusText.textContent = state.auditorMode ? "Auditor Mode: Active" : "Auditor Mode: Off";
+          }
+          auditorBtn.classList.toggle("bg-amber-100", state.auditorMode);
+          auditorBtn.classList.toggle("text-amber-900", state.auditorMode);
+          saveState();
+          renderApp();
+          showToast(state.auditorMode ? "CA Sign-Off Mode Activated" : "Auditor Mode Deactivated");
+        });
+      }
+
+      // 1-Click Auto Test & Demo Data Loader
+      const autoTestBtn = document.getElementById("run-auto-test-btn");
+      if (autoTestBtn) {
+        autoTestBtn.addEventListener("click", () => {
+          const client = curClient();
+          if (!client) return;
+
+          // Inject verified test edge cases
+          client.pan = "AAATZ9876K";
+          client.csr1 = "CSR00098765";
+          client.darpan = "DL/2024/0987123";
+          client.dates = {
+            fcraExp: new Date(Date.now() + 85 * 864e5).toISOString().slice(0, 10), // 85 days left (amber)
+            taxExp: new Date(Date.now() + 380 * 864e5).toISOString().slice(0, 10), // >1 year (green)
+            agm: new Date(Date.now() - 5 * 864e5).toISOString().slice(0, 10) // 5 days overdue (red)
+          };
+
+          client.d = client.d || {};
+          // Donors edge test data
+          client.d.donors = [
+            { id: "td1", name: "Rameshwar Jindal", pan: "AAAPJ1234A", amt: 150000, mode: "Electronic Bank Transfer", date: "2026-04-12", purpose: "Health Clinic" },
+            { id: "td2", name: "Infosys Foundation CSR", pan: "AAACI9999F", amt: 1200000, mode: "Electronic Bank Transfer", date: "2026-06-25", purpose: "STEM Lab Grant" },
+            { id: "td3", name: "Ananya Deshmukh", pan: "AKDPD5555M", amt: 25000, mode: "Cheque / Draft", date: "2026-08-10", purpose: "Scholarship Fund" }
+          ];
+
+          // Tax calculation test edge case (shortfall + commercial ceiling)
+          client.d.taxCalc = {
+            gross: 15000000, // 1.5 Cr
+            app: 11000000,   // 1.1 Cr (Shortfall against 1.275 Cr target)
+            commRev: 2400000,// 16% (Within 20% safe zone)
+            anon: 600000     // Triggers 30% tax on excess
+          };
+
+          // FCRA test edge cases (receipts + close to 20% cap)
+          client.d.fc = {
+            rc: [
+              { dt: "2026-04-18", donor: "Global Giving Foundation (USA)", amt: 2500000 },
+              { dt: "2026-07-22", donor: "Commonwealth Relief Trust (UK)", amt: 1500000 }
+            ],
+            ad: 720000, // 18% (Warning threshold)
+            pg: 2800000,
+            pub: { 0: true, 1: true, 2: false, 3: false }
+          };
+
+          // Project Grants test data
+          client.d.grants = [
+            { id: "tg1", title: "Clean Drinking Water Project", funder: "Tata Trusts CSR", sanctioned: 5000000, spent: 4200000, end: "2027-03-31" },
+            { id: "tg2", title: "Tribal Girl Child Education", funder: "Azim Premji Philanthropic Initiatives", sanctioned: 3000000, spent: 1800000, end: "2027-06-30" }
+          ];
+
+          saveState();
+          renderApp();
+          showToast("Live Test Data Injected! All modules populated.");
+        });
+      }
+
+      // Add NGO Toggle Button
+      const toggleNgoBtn = document.getElementById("toggle-add-ngo-btn");
+      if (toggleNgoBtn) {
+        toggleNgoBtn.addEventListener("click", () => {
+          const form = document.getElementById("add-ngo-form");
+          if (form) form.classList.toggle("hidden");
+        });
+      }
+
+      // Add NGO Submit
+      const addNgoForm = document.getElementById("add-ngo-form");
+      if (addNgoForm) {
+        addNgoForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const nameInput = document.getElementById("ngo-name-input");
+          const typeSelect = document.getElementById("ngo-type-select");
+          const fcraInput = document.getElementById("ngo-fcra-input");
+          
+          if (!nameInput || !nameInput.value.trim()) return;
+
+          const newClient = {
+            id: "c" + Date.now(),
+            name: nameInput.value.trim(),
+            type: typeSelect ? typeSelect.value : "Trust",
+            fcra: fcraInput ? fcraInput.checked : true,
+            pan: "AAATA" + Math.floor(1000 + Math.random() * 9000) + "F",
+            dates: {},
+            s: {},
+            d: {}
+          };
+
+          state.clients.push(newClient);
+          state.cur = newClient.id;
+          nameInput.value = "";
+          addNgoForm.classList.add("hidden");
+          saveState();
+          renderApp();
+          showToast("New NGO entity registered");
+        });
+      }
+
+      // Global Click Handler Delegation
+      document.addEventListener("click", (e) => {
+        const target = e.target;
+        const btn = target.closest("button");
+        if (!btn) return;
+        const ds = btn.dataset;
+        const client = curClient();
+
+        // Top Nav Tab Click
+        if (ds.navTab) {
+          ui.tab = ds.navTab;
+          renderApp();
+          return;
+        }
+
+        // Sidebar Client Switcher
+        if (ds.clientSelect) {
+          state.cur = ds.clientSelect;
+          saveState();
+          renderApp();
+          return;
+        }
+
+        // Checklist Filter
+        if (ds.filter) {
+          ui.filter = ds.filter;
+          renderApp();
+          return;
+        }
+
+        // Checklist Status Toggle
+        if (ds.cycleStatus && client) {
+          client.s = client.s || {};
+          client.s[ds.cycleStatus] = ((client.s[ds.cycleStatus] || 0) + 1) % 4;
+          
+          if (state.auditorMode && client.s[ds.cycleStatus] === 2) {
+            client.d = client.d || {};
+            client.d['ver_' + ds.cycleStatus] = `${state.auditorName} &bull; UDIN: ${state.auditorUDIN}`;
+          }
+          
+          saveState();
+          renderApp();
+          return;
+        }
+
+        // Resolution Switcher
+        if (ds.resSelect) {
+          ui.activeResolution = ds.resSelect;
+          renderApp();
+          return;
+        }
+
+        // Copy Resolution
+        if (btn.id === "copy-resolution-btn") {
+          const ta = document.getElementById("resolution-textarea");
+          if (ta) {
+            navigator.clipboard.writeText(ta.value).then(() => {
+              showToast("Resolution copied to clipboard");
+            });
+          }
+          return;
+        }
+
+        // Export 10BD CSV
+        if (btn.id === "export-10bd-csv-btn" && client && client.d && client.d.donors) {
+          let csv = "Unique_ID,Donor_Name,PAN_Aadhaar,Amount,Donation_Mode,Section\n";
+          client.d.donors.forEach((d, i) => {
+            csv += `"DON-${i+1}","${d.name}","${d.pan}",${d.amt},"${d.mode}","80G(5)(vi)"\n`;
+          });
+          const blob = new Blob([csv], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `Form_10BD_${client.name.replace(/\s+/g, '_')}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast("Form 10BD CSV Exported");
+          return;
+        }
+
+        // Remove Donor
+        if (ds.removeDonor !== undefined && client && client.d && client.d.donors) {
+          client.d.donors.splice(Number(ds.removeDonor), 1);
+          saveState();
+          renderApp();
+          showToast("Donor record deleted");
+          return;
+        }
+
+        // Remove FC Receipt
+        if (ds.removeFcReceipt !== undefined && client && client.d && client.d.fc) {
+          client.d.fc.rc.splice(Number(ds.removeFcReceipt), 1);
+          saveState();
+          renderApp();
+          showToast("Foreign receipt deleted");
+          return;
+        }
+
+        // Launch Compliance Cert Modal
+        if (btn.id === "launch-cert-modal-btn") {
+          const modal = document.getElementById("cert-modal");
+          const body = document.getElementById("cert-printable-body");
+          if (modal && body && client) {
+            const stats = calcStats(client);
+            body.innerHTML = `
+              <div class="space-y-2">
+                <span class="text-xs uppercase font-mono font-bold tracking-widest text-teal-800 dark:text-teal-400">Statutory Governance &amp; Exemption Board</span>
+                <h2 class="font-display font-extrabold text-2xl text-slate-900 dark:text-white">CERTIFICATE OF STATUTORY COMPLIANCE</h2>
+                <p class="text-xs text-slate-500">Issued under the direct provisions of Indian Non-Profit Jurisprudence</p>
+              </div>
+
+              <div class="py-4 border-y border-dashed border-teal-800/30 text-xs leading-relaxed space-y-2 text-slate-700 dark:text-slate-300">
+                <p>This is to verify and certify that the statutory compliance posture of:</p>
+                <p class="font-display font-extrabold text-xl text-slate-900 dark:text-white">${escapeHtml(client.name)}</p>
+                <p>PAN: <strong class="font-mono">${client.pan || 'AAATA1234F'}</strong> &bull; Legal Type: <strong>${client.type}</strong> ${client.fcra ? '&bull; FCRA Designated' : ''}</p>
+                <p>has been evaluated on <strong class="font-mono">${new Date().toLocaleDateString('en-IN')}</strong> with an aggregate Statutory Index of:</p>
+                <div class="text-3xl font-display font-extrabold text-teal-700 dark:text-teal-400">${stats.pct}% Compliant</div>
+                <p class="text-[11px] text-slate-400">Audit trail verified with 0 critical forfeiture notices active.</p>
+              </div>
+
+              <div class="pt-6 flex justify-between items-end text-left text-xs">
+                <div>
+                  <span class="font-mono text-[10px] text-slate-400 block">UDIN Verification:</span>
+                  <span class="font-mono font-bold text-teal-700 dark:text-teal-400">${state.auditorUDIN}</span>
+                  <span class="text-[10px] text-slate-400 block mt-0.5">Place: New Delhi</span>
+                </div>
+                <div class="text-right">
+                  <span class="font-bold block">${state.auditorName}</span>
+                  <span class="text-[10px] text-slate-400 block">Chartered Accountants &bull; Peer Reviewed</span>
+                </div>
+              </div>
+            `;
+            modal.classList.remove("hidden");
+          }
+          return;
+        }
+
+        // Close Cert Modal
+        if (btn.id === "close-cert-modal-btn") {
+          const modal = document.getElementById("cert-modal");
+          if (modal) modal.classList.add("hidden");
+          return;
+        }
+
+        // View Form 10BE Certificate
+        const gen10beAttr = btn.getAttribute("data-generate-10be");
+        if (gen10beAttr !== null && gen10beAttr !== undefined && client && client.d && client.d.donors) {
+          const donorIdx = parseInt(gen10beAttr, 10);
+          const donor = client.d.donors[donorIdx];
+          const modal = document.getElementById("form10be-modal");
+          const body = document.getElementById("form10be-printable-body");
+          if (donor && modal && body) {
+            const certNo = `10BE-${state.fy.replace("-", "")}-${donorIdx + 1001}`;
+            body.innerHTML = `
+              <div class="text-center pb-4 border-b border-slate-200 dark:border-slate-700 space-y-1">
+                <span class="text-[10px] uppercase font-mono font-bold tracking-widest text-teal-700 dark:text-teal-400">Income Tax Department &bull; Government of India</span>
+                <h2 class="font-display font-extrabold text-xl text-slate-900 dark:text-white">FORM NO. 10BE</h2>
+                <p class="text-[11px] text-slate-500">[See rule 18AB of the Income-tax Rules, 1962 / Rules 2026]</p>
+                <p class="font-bold text-xs text-slate-700 dark:text-slate-300">Certificate of Donation under Section 80G(5)(vi) / Section 332</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl space-y-1 border border-slate-200 dark:border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase block">Donee / Organization</span>
+                  <strong class="font-bold block text-sm text-slate-900 dark:text-white">${escapeHtml(client.name)}</strong>
+                  <span class="text-[11px] text-slate-500 block">PAN: <strong class="font-mono">${client.pan || 'AAATA1234F'}</strong></span>
+                  <span class="text-[11px] text-slate-500 block">Registration URN: <strong>${client.pan || 'AAATA1234F'}E20214</strong></span>
+                </div>
+
+                <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl space-y-1 border border-slate-200 dark:border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-bold uppercase block">Donor Details</span>
+                  <strong class="font-bold block text-sm text-slate-900 dark:text-white">${escapeHtml(donor.name)}</strong>
+                  <span class="text-[11px] text-slate-500 block">Donor PAN: <strong class="font-mono">${escapeHtml(donor.pan)}</strong></span>
+                  <span class="text-[11px] text-slate-500 block">Mode: <strong>${escapeHtml(donor.mode)}</strong></span>
+                </div>
+              </div>
+
+              <div class="p-3 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2 bg-slate-50/50 dark:bg-slate-900/40">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 dark:text-slate-400">Certificate Serial Number:</span>
+                  <span class="font-mono font-bold text-teal-700 dark:text-teal-400">${certNo}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 dark:text-slate-400">Date of Receipt:</span>
+                  <span class="font-mono font-bold">${donor.date || new Date().toISOString().slice(0, 10)}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600 dark:text-slate-400">Specified Purpose:</span>
+                  <span class="font-medium text-slate-800 dark:text-slate-200">${escapeHtml(donor.purpose || 'General 80G Contribution')}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm font-bold border-t pt-2 dark:border-slate-700">
+                  <span>Eligible Donation Amount:</span>
+                  <span class="font-mono text-teal-600 text-base">${formatINR(donor.amt)}</span>
+                </div>
+              </div>
+
+              <div class="pt-6 flex justify-between items-end text-xs">
+                <div>
+                  <div class="w-16 h-16 border border-slate-300 dark:border-slate-700 rounded-lg flex flex-col items-center justify-center text-[9px] font-mono text-slate-400 bg-slate-50 dark:bg-slate-900">
+                    <i class="fa-solid fa-qrcode text-xl text-slate-600 dark:text-slate-300 mb-0.5"></i>
+                    <span>VALID</span>
+                  </div>
+                  <span class="text-[10px] text-slate-400 block mt-1">Digitally Validated</span>
+                </div>
+                <div class="text-right space-y-1">
+                  <div class="h-10 border-b border-dashed border-slate-400 w-48 ml-auto"></div>
+                  <span class="font-bold block">For ${escapeHtml(client.name)}</span>
+                  <span class="text-[10px] text-slate-400 block">Authorized Signatory &bull; Trustee</span>
+                </div>
+              </div>
+            `;
+            modal.style.display = "flex";
+            showToast("Opening Form 10BE Certificate...");
+          }
+          return;
+        }
+
+        // Close 10BE Modal
+        if (btn.id === "close-10be-modal-btn") {
+          const modal = document.getElementById("form10be-modal");
+          if (modal) {
+            modal.style.display = "none";
+          }
+          return;
+        }
+
+        // Print 10BE
+        if (btn.id === "print-10be-btn") {
+          window.print();
+          return;
+        }
+
+        // WhatsApp Modal Trigger
+        if (btn.id === "launch-whatsapp-btn" && client) {
+          const stats = calcStats(client);
+          const gaps = getGaps(client);
+          const modal = document.getElementById("whatsapp-modal");
+          const ta = document.getElementById("whatsapp-text-preview");
+          if (modal && ta) {
+            ta.value = `*COMPLIANCE ALERT & STATUS BRIEF: ${client.name.toUpperCase()}*
+Date: ${new Date().toLocaleDateString('en-IN')}
+Financial Year: FY ${state.fy} (${state.reg === 'new' ? 'Act 2025 RNPO' : 'Act 1961'})
+
+*Overall Score: ${stats.pct}% Compliant*
+- Verified Duties: ${stats.done}/${stats.total}
+- Priority Gaps: ${gaps.length} Action Items Open
+
+*Key Pending Action:*
+${gaps.slice(0, 3).map(g => `• ${g[2]} (Due: ${g[3]})`).join("\n") || "• None! Zero high-priority non-compliance items."}
+
+_Prepared via NPO Compliance Desk OS. Please share pending vouchers/audit sign-offs promptly._`;
+            modal.classList.remove("hidden");
+          }
+          return;
+        }
+
+        // Close WhatsApp Modal
+        if (btn.id === "close-whatsapp-modal-btn") {
+          const modal = document.getElementById("whatsapp-modal");
+          if (modal) modal.classList.add("hidden");
+          return;
+        }
+
+        // Copy WhatsApp Text
+        if (btn.id === "copy-whatsapp-btn") {
+          const ta = document.getElementById("whatsapp-text-preview");
+          if (ta) {
+            navigator.clipboard.writeText(ta.value).then(() => {
+              showToast("WhatsApp message copied!");
+            });
+          }
+          return;
+        }
+
+        // Send WhatsApp
+        if (btn.id === "send-whatsapp-btn") {
+          const ta = document.getElementById("whatsapp-text-preview");
+          if (ta) {
+            const encoded = encodeURIComponent(ta.value);
+            window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+          }
+          return;
+        }
+
+        // Select Notice Template
+        if (ds.selectNotice) {
+          ui.selectedNotice = ds.selectNotice;
+          renderApp();
+          return;
+        }
+
+        // Copy Defense
+        if (btn.id === "copy-defense-btn") {
+          const ta = document.getElementById("defense-textarea");
+          if (ta) {
+            navigator.clipboard.writeText(ta.value).then(() => {
+              showToast("Legal rebuttal petition copied!");
+            });
+          }
+          return;
+        }
+
+        // GFR-12A UC Generator
+        if (ds.gfr12aGrant !== undefined && client && client.d && client.d.grants) {
+          const grant = client.d.grants[Number(ds.gfr12aGrant)];
+          if (!grant) return;
+          const modal = document.getElementById("cert-modal");
+          const body = document.getElementById("cert-printable-body");
+          if (modal && body) {
+            body.innerHTML = `
+              <div class="text-left space-y-4 text-xs text-slate-800 dark:text-slate-200">
+                <div class="text-center border-b pb-3 space-y-1">
+                  <span class="font-mono text-[10px] uppercase font-bold tracking-widest text-slate-400">Government of India / Public Financial Management</span>
+                  <h2 class="font-display font-extrabold text-xl text-slate-900 dark:text-white">FORM GFR 12-A</h2>
+                  <p class="text-[11px] text-slate-500">[See Rule 238 (1)] &bull; FORM OF UTILIZATION CERTIFICATE FOR AUTONOMOUS BODIES / NPOs</p>
+                </div>
+
+                <div class="space-y-2">
+                  <p>Certified that out of <strong>${formatINR(grant.sanctioned)}</strong> of grants-in-aid sanctioned during the year in favor of <strong>${escapeHtml(client.name)}</strong> under sanction letter no. <strong>${escapeHtml(grant.funder)}/REF-${Date.now().toString().slice(-4)}</strong>:</p>
+                  <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl space-y-1 font-mono">
+                    <div class="flex justify-between"><span>Sanctioned Amount:</span><strong>${formatINR(grant.sanctioned)}</strong></div>
+                    <div class="flex justify-between"><span>Amount Utilized:</span><strong>${formatINR(grant.spent)}</strong></div>
+                    <div class="flex justify-between border-t pt-1"><span>Unspent Balance Remaining:</span><strong>${formatINR(Math.max(0, grant.sanctioned - grant.spent))}</strong></div>
+                  </div>
+                  <p class="leading-relaxed">2. Certified that I have satisfied myself that the conditions on which the grants-in-aid was sanctioned have been duly fulfilled and that the money was actually utilized for the purpose for which it was sanctioned.</p>
+                </div>
+
+                <div class="pt-8 flex justify-between items-end">
+                  <div>
+                    <span class="font-mono font-bold block">${state.auditorName}</span>
+                    <span class="text-[10px] text-slate-400 block">Chartered Accountants &bull; UDIN: ${state.auditorUDIN}</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-bold block">Authorized Trustee</span>
+                    <span class="text-[10px] text-slate-400 block">${escapeHtml(client.name)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            modal.classList.remove("hidden");
+          }
+          return;
+        }
+
+        // Print Cert
+        if (btn.id === "print-cert-btn") {
+          window.print();
+          return;
+        }
+
+        // Export State Backup
+        if (btn.id === "export-backup-btn") {
+          const ta = document.getElementById("backup-json-textarea");
+          if (ta) {
+            ta.value = JSON.stringify(state, null, 2);
+            showToast("JSON state loaded into box");
+          }
+          return;
+        }
+
+        // Import State Backup
+        if (btn.id === "import-backup-btn") {
+          const ta = document.getElementById("backup-json-textarea");
+          if (ta && ta.value.trim()) {
+            try {
+              const parsed = JSON.parse(ta.value.trim());
+              if (parsed && Array.isArray(parsed.clients)) {
+                state = parsed;
+                saveState();
+                renderApp();
+                showToast("Data restored successfully!");
+              }
+            } catch (err) {
+              alert("Invalid JSON data provided.");
+            }
+          }
+          return;
+        }
+      });
+
+      // Global Change & Input Delegation
+      document.addEventListener("change", (e) => {
+        const target = e.target;
+        const ds = target.dataset;
+        const client = curClient();
+        if (!client) return;
+
+        // Entity Date Input
+        if (ds.entityDate) {
+          client.dates = client.dates || {};
+          client.dates[ds.entityDate] = target.value;
+          saveState();
+          renderSidebar();
+          return;
+        }
+
+        // Checklist Note
+        if (ds.checklistNote) {
+          client.d = client.d || {};
+          client.d['note_' + ds.checklistNote] = target.value;
+          saveState();
+          return;
+        }
+
+        // Tax Calc Inputs
+        if (ds.tc) {
+          client.d = client.d || {};
+          client.d.taxCalc = client.d.taxCalc || {};
+          client.d.taxCalc[ds.tc] = Number(target.value) || 0;
+          saveState();
+          renderApp();
+          return;
+        }
+
+        // FCRA Inputs
+        if (ds.fcField) {
+          client.d = client.d || {};
+          client.d.fc = client.d.fc || {};
+          client.d.fc[ds.fcField] = Number(target.value) || 0;
+          saveState();
+          renderApp();
+          return;
+        }
+      });
+
+      // Search input handler
+      document.addEventListener("input", (e) => {
+        if (e.target.id === "checklist-search-input") {
+          ui.search = e.target.value;
+          renderChecklistTab(curClient());
+        }
+      });
+
+      // Submit Form 10BD Donor Record
+      document.addEventListener("submit", (e) => {
+        const client = curClient();
+        if (!client) return;
+
+        if (e.target && e.target.id === "add-donor-form") {
+          e.preventDefault();
+          const nameEl = document.getElementById("dn-name");
+          const panEl = document.getElementById("dn-pan");
+          const amtEl = document.getElementById("dn-amt");
+          const modeEl = document.getElementById("dn-mode");
+
+          if (!nameEl || !panEl || !amtEl || !modeEl) return;
+
+          client.d = client.d || {};
+          client.d.donors = client.d.donors || [];
+          client.d.donors.push({
+            id: "d" + Date.now(),
+            name: nameEl.value.trim(),
+            pan: panEl.value.trim().toUpperCase(),
+            amt: Number(amtEl.value) || 0,
+            mode: modeEl.value,
+            date: new Date().toISOString().slice(0, 10),
+            purpose: "General 80G Contribution"
+          });
+
+          saveState();
+          renderApp();
+          showToast("Donor contribution recorded");
+          return;
+        }
+
+        if (e.target && e.target.id === "add-grant-form") {
+          e.preventDefault();
+          const titleEl = document.getElementById("gr-title");
+          const funderEl = document.getElementById("gr-funder");
+          const amtEl = document.getElementById("gr-amt");
+
+          if (!titleEl || !funderEl || !amtEl) return;
+
+          client.d = client.d || {};
+          client.d.grants = client.d.grants || [];
+          client.d.grants.push({
+            id: "g" + Date.now(),
+            title: titleEl.value.trim(),
+            funder: funderEl.value.trim(),
+            sanctioned: Number(amtEl.value) || 0,
+            spent: Math.round((Number(amtEl.value) || 0) * 0.75),
+            end: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)
+          });
+
+          saveState();
+          renderApp();
+          showToast("Grant project recorded");
+          return;
+        }
+
+        if (e.target && e.target.id === "add-fc-receipt-form") {
+          e.preventDefault();
+          const dtEl = document.getElementById("fc-dt");
+          const donorEl = document.getElementById("fc-donor");
+          const amtEl = document.getElementById("fc-amt");
+
+          if (!dtEl || !donorEl || !amtEl) return;
+
+          client.d = client.d || {};
+          client.d.fc = client.d.fc || { rc: [], ad: 0, pg: 0 };
+          client.d.fc.rc.push({
+            dt: dtEl.value,
+            donor: donorEl.value.trim(),
+            amt: Number(amtEl.value) || 0
+          });
+
+          saveState();
+          renderApp();
+          showToast("FC remittance added to SBI NDMB ledger");
+          return;
+        }
+      });
+
+      // Initial Render
+      renderApp();
+    });
+  </script>
+</body>
+</html>
